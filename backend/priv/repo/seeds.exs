@@ -269,6 +269,41 @@ app_nginx_8081 =
     tenant: tenant
   )
 
+# Only run docker commands in dev or test environments
+if System.get_env("MIX_ENV") in ["dev", "test"] do
+  self_hosted_credentials =
+    Ash.create!(
+      ImageCredentials,
+      %{label: "Self-hosted registry credentials", username: "admin", password: "admin"},
+      tenant: tenant
+    )
+
+  app_test_dev_self_hosted =
+    Ash.create!(
+      Application,
+      %{
+        name: "Self-hosted app",
+        description: "It was sample for self-hosted deployments.",
+        initial_release: %{
+          version: "0.0.1",
+          containers: [
+            %{
+              image: %{
+                reference: "localhost:5000/hello-world:latest",
+                image_credentials_id: self_hosted_credentials.id
+              },
+              restart_policy: :unless_stopped,
+              hostname: "",
+              env: %{},
+              privileged: false
+            }
+          ]
+        }
+      },
+      tenant: tenant
+    )
+end
+
 image_credentials =
   Ash.create!(
     ImageCredentials,
