@@ -60,6 +60,22 @@ defmodule Edgehog.DevicesFixtures do
   def unique_system_model_part_number, do: "1234-rev#{System.unique_integer([:positive])}"
 
   @doc """
+  Generate a %Devices.SystemModelPartNumber{}.
+  """
+  def system_model_part_number_fixture(opts \\ []) do
+    {tenant, opts} = Keyword.pop!(opts, :tenant)
+
+    params =
+      Enum.into(opts, %{
+        part_number: unique_system_model_part_number()
+      })
+
+    Edgehog.Devices.SystemModelPartNumber
+    |> Ash.Changeset.for_create(:create, params, tenant: tenant)
+    |> Ash.create!()
+  end
+
+  @doc """
   Generate a %Devices.Device{}.
   """
   def device_fixture(opts \\ []) do

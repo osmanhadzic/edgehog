@@ -27,6 +27,14 @@ defmodule Edgehog.Devices.HardwareTypePartNumber do
     ]
 
   graphql do
+    subscriptions do
+      pubsub EdgehogWeb.Endpoint
+
+      subscribe :hardware_type_part_number do
+        action_types [:create, :update, :destroy]
+      end
+    end
+
     type :hardware_type_part_number
   end
 
