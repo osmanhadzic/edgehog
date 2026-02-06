@@ -27,6 +27,14 @@ defmodule Edgehog.Devices.SystemModelPartNumber do
   graphql do
     type :system_model_part_number
 
+    subscriptions do
+      pubsub EdgehogWeb.Endpoint
+
+      subscribe :system_model_part_number do
+        action_types [:create, :update, :destroy]
+      end
+    end
+
     paginate_relationship_with devices: :relay
   end
 

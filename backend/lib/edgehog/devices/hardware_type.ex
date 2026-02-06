@@ -42,6 +42,14 @@ defmodule Edgehog.Devices.HardwareType do
   graphql do
     type :hardware_type
 
+    subscriptions do
+      pubsub EdgehogWeb.Endpoint
+
+      subscribe :hardware_type do
+        action_types [:create, :update, :destroy]
+      end
+    end
+
     paginate_relationship_with part_numbers: :relay
   end
 
